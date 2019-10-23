@@ -7,7 +7,8 @@
 # StrandTarget: Produces data to be aligned with STRAND
 
 import re
-from StringIO import StringIO
+
+from io import StringIO
 
 # A base target class which assumes some tags will be ignored.
 # This will output HTML with certain tags removed if used by itself.

@@ -12,7 +12,7 @@ import re
 import sys
 
 from random import shuffle
-from StringIO import StringIO
+from io import StringIO
 
 # Used for parsing HTML
 import bs4
