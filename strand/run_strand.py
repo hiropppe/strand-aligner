@@ -88,6 +88,7 @@ def main():
     in_file = gzip.open(opts.input_file, "r")
     linecount = 0
     for line in in_file:
+        line = line.decode("utf8")
         (key, webpages) = parse_entry(line)
         if len(key) == 0:
             print("Malformed entry at line", linecount)
@@ -197,8 +198,8 @@ def strand_extract_and_clean(strand_aligner, gc_aligner, source, target, source_
     for (s, t) in alignment:
         if (s and s.tc_type == strand.TCType.CHUNK
                 and t and t.tc_type == strand.TCType.CHUNK):
-            source_sents = source_seg.process(unicode(s.chunk_data))
-            target_sents = target_seg.process(unicode(t.chunk_data))
+            source_sents = source_seg.process(s.chunk_data)
+            target_sents = target_seg.process(t.chunk_data)
             # print("GC alignment: %d x %d = %d" % (len(source_sents),
             #    len(target_sents), len(source_sents) * len(target_sents)))
             grid_size = len(source_sents) * len(target_sents)

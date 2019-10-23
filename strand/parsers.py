@@ -143,10 +143,43 @@ class StrandTarget(CleanupTarget):
 
     # Write the current chunk to the output buffer if it's not empty
     def clear_current_chunk(self):
-        if self.current_chunk.len > 0:
+        if len(self.current_chunk.getvalue().strip()) > 0:
             chunk_str = self.format_whitespace(self.current_chunk.getvalue().strip())
             if len(chunk_str) > 0:
                 self.buffer.write(chunk_str)
                 self.buffer.write("\n")
             self.current_chunk.close()
             self.current_chunk = StringIO()
+
+
+# test
+if __name__ == "__main__":
+    import bs4
+    import sys
+    from lxml import etree
+
+    def decode_html(html_string):
+        converted = bs4.UnicodeDammit(html_string, isHTML=True)
+        if not converted.unicode_markup:
+            raise UnicodeDecodeError(
+                "Failed to detect encoding, tried [%s]",
+                ', '.join(converted.tried_encodings))
+        return converted.unicode_markup
+
+    def apply_parser(html, parser):
+        result = ""
+        try:
+            result = etree.parse(StringIO(html), parser)
+        except:  # TODO: find the specific error
+            try:
+                result = etree.parse(StringIO(decode_html(html)), parser)
+            except:
+                soup = bs4.BeautifulSoup(html, "lxml")
+                result = etree.parse(StringIO(str(soup)), parser)
+        return result
+
+    html = open(sys.argv[1]).read()
+    parser = etree.HTMLParser(encoding="utf-8", target=StrandTarget())
+
+    tagchunks = apply_parser(html, parser)
+    print(tagchunks)
