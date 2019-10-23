@@ -10,6 +10,8 @@ else
 OPTS=$(OPT)
 endif
 
+BOOST_ROOT = /usr/include/boost
+
 INCS = -I. -I$(BOOST_ROOT)
 LIBS = -L$(BOOST_ROOT)/stage/lib
 LDFLAGS = -lm -lpthread -ldl -lboost_program_options -lboost_filesystem -lboost_serialization -lpthread -lboost_thread -lboost_system
@@ -19,8 +21,9 @@ CXX = /usr/bin/g++
 CXXFLAGS=$(OPTS) $(INCS)
 
 SRC_FILES = \
-	aligner.cpp \
+  aligner.cpp \
   gale_church_aligner.cpp
+
 MAIN_FILE = main.cpp
 
 OBJ_FILES = $(SRC_FILES:%.cpp=%.o)
