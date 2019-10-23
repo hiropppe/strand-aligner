@@ -5,18 +5,17 @@
 # Sentence breaking using NLTK
 
 import nltk
-import nltk.data
-import nltk.tokenize.punkt
+
+from nltk.tokenize import PunktSentenceTokenizer
 
 
 class Segmenter:
     def __init__(self, language):
-        sbreak_path = "tokenizers/punkt/" + language.lower() + ".pickle"
-        try:
-            self.sent_breaker = nltk.data.load(sbreak_path)
-        except(LookupError):
-            print("Unable to find sentence breaking model for", language)
-            self.sent_breaker = nltk.data.load("tokenizers/punkt/english.pickle")
+        if language.lower() == "japanese":
+            self.sent_breaker = nltk.RegexpTokenizer(u'[^　！？。]*[！？。.\n]')
+        else:
+            nltk.download("punkt")
+            self.sent_breaker = PunktSentenceTokenizer()
 
     # Perform sentence breaking on a line of text and return an array of sentences
     def process(self, line):
@@ -24,16 +23,15 @@ class Segmenter:
 
 
 def main():
-    import codecs
     import sys
     text_filename = sys.argv[1]
     language = sys.argv[2]
-    text_file = codecs.open(text_filename, encoding='utf-8', mode='r')
+    text_file = open(text_filename, encoding='utf-8', mode='r')
     segmenter = Segmenter(language)
     for line in text_file:
         sentences = segmenter.process(line)
         for sentence in sentences:
-            print(sentence.encode('utf-8'))
+            print(sentence)
     text_file.close()
 
 
