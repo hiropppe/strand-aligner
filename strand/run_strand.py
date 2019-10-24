@@ -2,21 +2,17 @@
 
 # Runs STRAND on the gzipped output of the CommonCrawl miner.
 
+import click
 import codecs
 import errno
 import gzip
-import itertools
-import optparse
 import os
 import re
-import sys
 
-from random import shuffle
 from io import StringIO
 
 # Used for parsing HTML
 import bs4
-import lxml.html
 from lxml import etree
 
 import parsers
@@ -25,23 +21,20 @@ from segmenter import Segmenter
 from py_aligner import PyGaleChurchAligner
 
 
-def main():
-    parser = optparse.OptionParser()
-    parser.add_option("-i", "--input-file", dest="input_file", default="",
-                      type="string", help="Location of the uncompressed mined webpages")
-    parser.add_option("-n", "--num_entries", dest="num_entries", default=0,
-                      type="int",
-                      help="Maximum number of entries to examine, set to 0 for no limit")
-
-    parser.add_option("-o", "--out-prefix", dest="out_prefix", default="",
-                      help="Parallel data will be output to this location")
-
-    (opts, args) = parser.parse_args()
-
+@click.command()
+@click.option("--input-file", "-i", help="Location of the uncompressed mined webpages")
+@click.option("--num-entries", "-n", help="Maximum number of entries to examine, set to 0 for no limit")
+@click.option("--out-prefix", "-o", help="Parallel data will be output to this location")
+@click.option("--sentence-aligner", "-sa", default=None, type=click.Choice(["GC"]), help="Sentence alignment implementation")
+def main(input_file, num_entries, sentence_aligner, out_prefix):
     # Initialize the HTML parser and aligners
     strand_parser = etree.HTMLParser(encoding="utf-8",
                                      target=parsers.StrandTarget())
-    gc_aligner = PyGaleChurchAligner()
+    if sentence_aligner == "GC":
+        sent_aligner = PyGaleChurchAligner()
+    else:
+        sent_aligner = None
+
     strand_aligner = strand.StrandAligner()
 
     # Mapping from a full language name to a two letter code:
@@ -69,11 +62,11 @@ def main():
                     "Pashto": "ps",
                     "Somali": "so"}
 
-    if opts.input_file == "":
+    if input_file == "":
         print("No input file given")
         return
 
-    if opts.out_prefix == "":
+    if out_prefix == "":
         print("No output prefix given")
         return
 
@@ -85,7 +78,7 @@ def main():
     # We will always be working with English
     segmenters["en"] = Segmenter("English")
 
-    in_file = gzip.open(opts.input_file, "r")
+    in_file = gzip.open(input_file, "r")
     linecount = 0
     for line in in_file:
         line = line.decode("utf8")
@@ -104,6 +97,7 @@ def main():
                 data_by_language[lang]["url"] = webpage['url']
                 try:
                     tagchunks = apply_parser(webpage['html'], strand_parser)
+                    # print(tagchunks, file=open("{:s}.tagchunks.{:s}".format(out_prefix, lang_to_code[lang]), "w"))
                     data_by_language[lang]["strand"] = tagchunks
                 except:
                     print("Error parsing %s HTML at line %d" % (lang, linecount))
@@ -124,13 +118,13 @@ def main():
                     if pair_code not in output_files:
                         pair_files = {}
                         pair_files["source"] = codecs.open(
-                            "%s.%s.%s" % (opts.out_prefix, pair_code, source_code),
+                            "%s.%s.%s" % (out_prefix, pair_code, source_code),
                             encoding="utf-8", mode="w")
                         pair_files["target"] = codecs.open(
-                            "%s.%s.%s" % (opts.out_prefix, pair_code, target_code),
+                            "%s.%s.%s" % (out_prefix, pair_code, target_code),
                             encoding="utf-8", mode="w")
                         pair_files["annotation"] = codecs.open(
-                            "%s.%s.annotation" % (opts.out_prefix, pair_code),
+                            "%s.%s.annotation" % (out_prefix, pair_code),
                             encoding="utf-8", mode="w")
                         output_files[pair_code] = pair_files
                     # Line counters
@@ -143,7 +137,7 @@ def main():
                     source_strand = data_by_language[source_lang]["strand"].split("\n")
                     target_strand = data_by_language[target_lang]["strand"].split("\n")
                     (source_sents, target_sents) = strand_extract_and_clean(
-                        strand_aligner, gc_aligner, source_strand, target_strand,
+                        strand_aligner, sent_aligner, source_strand, target_strand,
                         segmenters[source_code], segmenters[target_code])
 
                     # If we have any data, write it along with the annotation
@@ -166,7 +160,7 @@ def main():
                         line_counters[pair_code] += len(source_sents)
 
         linecount += 1
-        if linecount == opts.num_entries:
+        if linecount == num_entries:
             break
     in_file.close()
 
@@ -184,7 +178,7 @@ def main():
 # sentence pairs after filtering.
 
 
-def strand_extract_and_clean(strand_aligner, gc_aligner, source, target, source_seg, target_seg):
+def strand_extract_and_clean(strand_aligner, sent_aligner, source, target, source_seg, target_seg):
     source_tagchunks = strand_aligner.create_tag_chunk_stream(source)
     target_tagchunks = strand_aligner.create_tag_chunk_stream(target)
    # print("STRAND alignment: %d x %d = %d" % (len(source_tagchunks),
@@ -198,22 +192,26 @@ def strand_extract_and_clean(strand_aligner, gc_aligner, source, target, source_
     for (s, t) in alignment:
         if (s and s.tc_type == strand.TCType.CHUNK
                 and t and t.tc_type == strand.TCType.CHUNK):
-            source_sents = source_seg.process(s.chunk_data)
-            target_sents = target_seg.process(t.chunk_data)
-            # print("GC alignment: %d x %d = %d" % (len(source_sents),
-            #    len(target_sents), len(source_sents) * len(target_sents)))
-            grid_size = len(source_sents) * len(target_sents)
-            if grid_size > 1000000000:
-                continue
-            (cost, aligned_source, aligned_target) = gc_aligner.align(
-                source_sents, target_sents)
-            for i in range(0, len(aligned_source)):
-                s_sent = aligned_source[i]
-                t_sent = aligned_target[i]
-                # if s_sent != t_sent and alpha_min_length(s_sent, t_sent) >= 5 and end_punc(s_sent, t_sent) == 1:
-                if s_sent != t_sent:
-                    source_out.append(s_sent)
-                    target_out.append(t_sent)
+            if sent_aligner is None:
+                source_out.append(s.chunk_data)
+                target_out.append(t.chunk_data)
+            else:
+                source_sents = source_seg.process(s.chunk_data)
+                target_sents = target_seg.process(t.chunk_data)
+                # print("GC alignment: %d x %d = %d" % (len(source_sents), len(
+                #     target_sents), len(source_sents) * len(target_sents)))
+                grid_size = len(source_sents) * len(target_sents)
+                if grid_size > 1000000000:
+                    continue
+                (cost, aligned_source, aligned_target) = sent_aligner.align(
+                    source_sents, target_sents)
+                for i in range(0, len(aligned_source)):
+                    s_sent = aligned_source[i]
+                    t_sent = aligned_target[i]
+                    # if s_sent != t_sent and alpha_min_length(s_sent, t_sent) >= 5 and end_punc(s_sent, t_sent) == 1:
+                    if s_sent != t_sent:
+                        source_out.append(s_sent)
+                        target_out.append(t_sent)
     return (source_out, target_out)
 
 # Usese BeautifulSoup to handle encodings (taken from lxml tutorial)
