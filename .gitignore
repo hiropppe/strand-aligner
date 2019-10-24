@@ -105,3 +105,4 @@ venv.bak/
 
 *.o
 strand/aligner_test
+test/*.gz
