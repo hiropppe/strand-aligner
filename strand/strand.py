@@ -91,6 +91,7 @@ class StrandAligner:
         if s_size == 0 or t_size == 0:
             print("One or more of the input streams are empty")
             return []
+
         # Compute the maximum deviation from the diagonal given the difference
         # percentage threshold
         max_difference = s_size + t_size
@@ -98,17 +99,24 @@ class StrandAligner:
         (source, target) = self.tc_to_int(source_stream, target_stream)
 
         (alignment_cost, alignment) = self.pa.align(source, target)
+
+        # Compute the difference percentage: the total number of mismatched tokens
+        # divided by the maximum possible number of mismatched tokens
+        difference_percentage = -float(alignment_cost)
+        difference_percentage /= max_difference
+
         # Lengths of aligned source and target chunks, used in computing Pearson's
         # coefficient
         result = []
         for (s, t) in alignment:
             if s >= 0 and t >= 0:
-                result.append((source_stream[s], target_stream[t]))
+                result.append((s, source_stream[s], t, target_stream[t], abs(s-t)/max(s_size, t_size)))
             elif s >= 0:
-                result.append((source_stream[s], None))
+                result.append((s, source_stream[s], -1, None, -1))
             elif t >= 0:
-                result.append((None, target_stream[t]))
-        return result
+                result.append((-1, None, t, target_stream[t], -1))
+
+        return result, difference_percentage
 
     # Creates maxent instance sets from a set of web page pairs. Source/target
     # docs are arrays of tagchunk streams, and labels is an array of Booleans
@@ -120,9 +128,9 @@ class StrandAligner:
         for i in range(0, len(source_docs)):
             (alignment, instance_set) = self.create_instance_set(
                 source_docs[i], target_docs[i])
-            if labels[i] == True:
+            if labels[i] is True:
                 instance_set.true_instance = 0
-            elif labels[i] == False:
+            elif labels[i] is False:
                 instance_set.true_instance = 1
             data.append(instance_set)
         return data

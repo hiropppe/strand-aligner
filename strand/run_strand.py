@@ -97,7 +97,8 @@ def main(input_file, num_entries, sentence_aligner, out_prefix):
                 data_by_language[lang]["url"] = webpage['url']
                 try:
                     tagchunks = apply_parser(webpage['html'], strand_parser)
-                    # print(tagchunks, file=open("{:s}.tagchunks.{:s}".format(out_prefix, lang_to_code[lang]), "w"))
+                    # print(tagchunks, file=open("{:s}.tagchunks.{:s}".format(
+                    #     out_prefix, lang_to_code[lang]), "w"))
                     data_by_language[lang]["strand"] = tagchunks
                 except:
                     print("Error parsing %s HTML at line %d" % (lang, linecount))
@@ -117,6 +118,9 @@ def main(input_file, num_entries, sentence_aligner, out_prefix):
                     # Output files:
                     if pair_code not in output_files:
                         pair_files = {}
+                        pair_files["bi"] = codecs.open(
+                            "%s.%s" % (out_prefix, pair_code),
+                            encoding="utf-8", mode="w")
                         pair_files["source"] = codecs.open(
                             "%s.%s.%s" % (out_prefix, pair_code, source_code),
                             encoding="utf-8", mode="w")
@@ -136,26 +140,33 @@ def main(input_file, num_entries, sentence_aligner, out_prefix):
 
                     source_strand = data_by_language[source_lang]["strand"].split("\n")
                     target_strand = data_by_language[target_lang]["strand"].split("\n")
-                    (source_sents, target_sents) = strand_extract_and_clean(
+                    (bi_sents, source_sents, target_sents, dp) = strand_extract_and_clean(
                         strand_aligner, sent_aligner, source_strand, target_strand,
                         segmenters[source_code], segmenters[target_code])
 
                     # If we have any data, write it along with the annotation
                     if len(source_sents) == len(target_sents) and len(source_sents) > 0:
+                        bi_out = output_files[pair_code]["bi"]
+                        print(dp, file=bi_out)
+                        for b in bi_sents:
+                            print("{:d}\t{:s}\t{:d}\t{:s}\t{:f}".format(
+                                b[0], b[1], b[2], b[3], b[4]), file=bi_out)
                         source_out = output_files[pair_code]["source"]
                         for s in source_sents:
-                            source_out.write(s + "\n")
+                            print(s, file=source_out)
                         target_out = output_files[pair_code]["target"]
                         for t in target_sents:
-                            target_out.write(t + "\n")
+                            print(t, file=target_out)
 
-                        current_offset = str(line_counters[pair_code])
-                        increment = str(len(source_sents))
+                        current_offset = line_counters[pair_code]
+                        increment = len(source_sents)
 
                         annotation_out = output_files[pair_code]["annotation"]
-                        annotation_out.write(data_by_language[source_lang]["url"]
-                                             + "\t" + data_by_language[target_lang]["url"]
-                                             + "\t" + current_offset + "\t" + increment + "\n")
+                        print("{:s}\t{:s}\t{:d}\t{:d}\t{:f}".format(data_by_language[source_lang]["url"],
+                                                                    data_by_language[target_lang]["url"],
+                                                                    current_offset,
+                                                                    increment,
+                                                                    dp), file=annotation_out)
 
                         line_counters[pair_code] += len(source_sents)
 
@@ -166,6 +177,7 @@ def main(input_file, num_entries, sentence_aligner, out_prefix):
 
     # Close files
     for pair in output_files:
+        output_files[pair]["bi"].close()
         output_files[pair]["source"].close()
         output_files[pair]["target"].close()
         output_files[pair]["annotation"].close()
@@ -186,13 +198,15 @@ def strand_extract_and_clean(strand_aligner, sent_aligner, source, target, sourc
     grid_size = len(source_tagchunks) * len(target_tagchunks)
     if grid_size > 1000000000:
         return ([], [])
-    alignment = strand_aligner.align(source_tagchunks, target_tagchunks)
+    alignment, dp = strand_aligner.align(source_tagchunks, target_tagchunks)
+    bi_out = []
     source_out = []
     target_out = []
-    for (s, t) in alignment:
+    for (si, s, ti, t, c) in alignment:
         if (s and s.tc_type == strand.TCType.CHUNK
                 and t and t.tc_type == strand.TCType.CHUNK):
             if sent_aligner is None:
+                bi_out.append((si, s.chunk_data, ti, t.chunk_data, c))
                 source_out.append(s.chunk_data)
                 target_out.append(t.chunk_data)
             else:
@@ -210,9 +224,10 @@ def strand_extract_and_clean(strand_aligner, sent_aligner, source, target, sourc
                     t_sent = aligned_target[i]
                     # if s_sent != t_sent and alpha_min_length(s_sent, t_sent) >= 5 and end_punc(s_sent, t_sent) == 1:
                     if s_sent != t_sent:
+                        bi_out.append((s_sent, t_sent, c))
                         source_out.append(s_sent)
                         target_out.append(t_sent)
-    return (source_out, target_out)
+    return (bi_out, source_out, target_out, dp)
 
 # Usese BeautifulSoup to handle encodings (taken from lxml tutorial)
 
