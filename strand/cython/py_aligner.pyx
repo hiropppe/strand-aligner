@@ -1,17 +1,18 @@
 # distutils: language = c++
-# distutils: sources = aligner.cpp gale_church_aligner.cpp
+# distutils: sources = cpp/aligner.cpp cpp/gale_church_aligner.cpp
+# distutils: include_dirs = .
 
 from libcpp.vector cimport vector
 from libcpp.utility cimport pair
 import re
 
-cdef extern from "aligner.h":
+cdef extern from "cpp/aligner.h":
   cdef cppclass Aligner:
     Aligner() except +
     int align(vector[int]&, vector[int]&, vector[pair[int, int] ]*)
     int s_size, t_size
 
-cdef extern from "gale_church_aligner.h":
+cdef extern from "cpp/gale_church_aligner.h":
   struct AlignmentBead:
     int s_start
     int s_end

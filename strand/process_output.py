@@ -21,9 +21,9 @@ import bs4
 import lxml.html
 from lxml import etree
 
-import parsers
-import strand
-from segmenter import Segmenter
+from .strand import parsers
+from .strand import strand
+from .strand import Segmenter
 from py_aligner import PyGaleChurchAligner
 
 

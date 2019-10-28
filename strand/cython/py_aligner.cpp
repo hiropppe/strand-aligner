@@ -4,15 +4,18 @@
 {
     "distutils": {
         "depends": [
-            "aligner.h",
-            "gale_church_aligner.h"
+            "cpp/aligner.h",
+            "cpp/gale_church_aligner.h"
+        ],
+        "include_dirs": [
+            "."
         ],
         "language": "c++",
         "name": "py_aligner",
         "sources": [
-            "py_aligner.pyx",
-            "aligner.cpp",
-            "gale_church_aligner.cpp"
+            "cython/py_aligner.pyx",
+            "cpp/aligner.cpp",
+            "cpp/gale_church_aligner.cpp"
         ]
     },
     "module_name": "py_aligner"
@@ -632,8 +635,8 @@ static CYTHON_INLINE float __PYX_NAN() {
 #include "typeinfo"
 #include <vector>
 #include <utility>
-#include "aligner.h"
-#include "gale_church_aligner.h"
+#include "cpp/aligner.h"
+#include "cpp/gale_church_aligner.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -842,7 +845,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "py_aligner.pyx",
+  "cython/py_aligner.pyx",
   "stringsource",
 };
 
@@ -850,7 +853,7 @@ static const char *__pyx_f[] = {
 struct __pyx_obj_10py_aligner_PyAligner;
 struct __pyx_obj_10py_aligner_PyGaleChurchAligner;
 
-/* "py_aligner.pyx":24
+/* "py_aligner.pyx":25
  *     double align(vector[int]&, vector[int]&, vector[AlignmentBead]*)
  * 
  * cdef class PyAligner:             # <<<<<<<<<<<<<<
@@ -863,7 +866,7 @@ struct __pyx_obj_10py_aligner_PyAligner {
 };
 
 
-/* "py_aligner.pyx":48
+/* "py_aligner.pyx":49
  *     return (cost, alignment)
  * 
  * cdef class PyGaleChurchAligner:             # <<<<<<<<<<<<<<
@@ -1349,7 +1352,7 @@ static PyObject *__pyx_tuple__5;
 static PyObject *__pyx_tuple__6;
 /* Late includes */
 
-/* "py_aligner.pyx":26
+/* "py_aligner.pyx":27
  * cdef class PyAligner:
  *   cdef Aligner *thisptr
  *   def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -1379,7 +1382,7 @@ static int __pyx_pf_10py_aligner_9PyAligner___cinit__(struct __pyx_obj_10py_alig
   Aligner *__pyx_t_1;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "py_aligner.pyx":27
+  /* "py_aligner.pyx":28
  *   cdef Aligner *thisptr
  *   def __cinit__(self):
  *     self.thisptr = new Aligner()             # <<<<<<<<<<<<<<
@@ -1390,11 +1393,11 @@ static int __pyx_pf_10py_aligner_9PyAligner___cinit__(struct __pyx_obj_10py_alig
     __pyx_t_1 = new Aligner();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 27, __pyx_L1_error)
+    __PYX_ERR(0, 28, __pyx_L1_error)
   }
   __pyx_v_self->thisptr = __pyx_t_1;
 
-  /* "py_aligner.pyx":26
+  /* "py_aligner.pyx":27
  * cdef class PyAligner:
  *   cdef Aligner *thisptr
  *   def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -1413,7 +1416,7 @@ static int __pyx_pf_10py_aligner_9PyAligner___cinit__(struct __pyx_obj_10py_alig
   return __pyx_r;
 }
 
-/* "py_aligner.pyx":28
+/* "py_aligner.pyx":29
  *   def __cinit__(self):
  *     self.thisptr = new Aligner()
  *   def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -1436,7 +1439,7 @@ static void __pyx_pf_10py_aligner_9PyAligner_2__dealloc__(struct __pyx_obj_10py_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "py_aligner.pyx":29
+  /* "py_aligner.pyx":30
  *     self.thisptr = new Aligner()
  *   def __dealloc__(self):
  *     del self.thisptr             # <<<<<<<<<<<<<<
@@ -1445,7 +1448,7 @@ static void __pyx_pf_10py_aligner_9PyAligner_2__dealloc__(struct __pyx_obj_10py_
  */
   delete __pyx_v_self->thisptr;
 
-  /* "py_aligner.pyx":28
+  /* "py_aligner.pyx":29
  *   def __cinit__(self):
  *     self.thisptr = new Aligner()
  *   def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -1457,7 +1460,7 @@ static void __pyx_pf_10py_aligner_9PyAligner_2__dealloc__(struct __pyx_obj_10py_
   __Pyx_RefNannyFinishContext();
 }
 
-/* "py_aligner.pyx":33
+/* "py_aligner.pyx":34
  *   # where the alignment is a list of aligned source/target indices (-1 is used
  *   # in the source or target for insertions/deletions)
  *   def align(self, source, target):             # <<<<<<<<<<<<<<
@@ -1496,11 +1499,11 @@ static PyObject *__pyx_pw_10py_aligner_9PyAligner_5align(PyObject *__pyx_v_self,
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_target)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("align", 1, 2, 2, 1); __PYX_ERR(0, 33, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("align", 1, 2, 2, 1); __PYX_ERR(0, 34, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "align") < 0)) __PYX_ERR(0, 33, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "align") < 0)) __PYX_ERR(0, 34, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -1513,7 +1516,7 @@ static PyObject *__pyx_pw_10py_aligner_9PyAligner_5align(PyObject *__pyx_v_self,
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("align", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 33, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("align", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 34, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_aligner.PyAligner.align", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1546,7 +1549,7 @@ static PyObject *__pyx_pf_10py_aligner_9PyAligner_4align(struct __pyx_obj_10py_a
   int __pyx_t_9;
   __Pyx_RefNannySetupContext("align", 0);
 
-  /* "py_aligner.pyx":36
+  /* "py_aligner.pyx":37
  *     cdef int i
  *     cdef vector[int] source_vec
  *     for i in source:             # <<<<<<<<<<<<<<
@@ -1557,26 +1560,26 @@ static PyObject *__pyx_pf_10py_aligner_9PyAligner_4align(struct __pyx_obj_10py_a
     __pyx_t_1 = __pyx_v_source; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_source); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_source); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 36, __pyx_L1_error)
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 37, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 36, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 37, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 36, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 37, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 36, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 37, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 36, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 37, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -1586,17 +1589,17 @@ static PyObject *__pyx_pf_10py_aligner_9PyAligner_4align(struct __pyx_obj_10py_a
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 36, __pyx_L1_error)
+          else __PYX_ERR(0, 37, __pyx_L1_error)
         }
         break;
       }
       __Pyx_GOTREF(__pyx_t_4);
     }
-    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 36, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 37, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_i = __pyx_t_5;
 
-    /* "py_aligner.pyx":37
+    /* "py_aligner.pyx":38
  *     cdef vector[int] source_vec
  *     for i in source:
  *       source_vec.push_back(i)             # <<<<<<<<<<<<<<
@@ -1607,10 +1610,10 @@ static PyObject *__pyx_pf_10py_aligner_9PyAligner_4align(struct __pyx_obj_10py_a
       __pyx_v_source_vec.push_back(__pyx_v_i);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(0, 37, __pyx_L1_error)
+      __PYX_ERR(0, 38, __pyx_L1_error)
     }
 
-    /* "py_aligner.pyx":36
+    /* "py_aligner.pyx":37
  *     cdef int i
  *     cdef vector[int] source_vec
  *     for i in source:             # <<<<<<<<<<<<<<
@@ -1620,7 +1623,7 @@ static PyObject *__pyx_pf_10py_aligner_9PyAligner_4align(struct __pyx_obj_10py_a
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_aligner.pyx":39
+  /* "py_aligner.pyx":40
  *       source_vec.push_back(i)
  *     cdef vector[int] target_vec
  *     for i in target:             # <<<<<<<<<<<<<<
@@ -1631,26 +1634,26 @@ static PyObject *__pyx_pf_10py_aligner_9PyAligner_4align(struct __pyx_obj_10py_a
     __pyx_t_1 = __pyx_v_target; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_target); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_target); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 39, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 40, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 39, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 40, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 39, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 40, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 39, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 40, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -1660,17 +1663,17 @@ static PyObject *__pyx_pf_10py_aligner_9PyAligner_4align(struct __pyx_obj_10py_a
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 39, __pyx_L1_error)
+          else __PYX_ERR(0, 40, __pyx_L1_error)
         }
         break;
       }
       __Pyx_GOTREF(__pyx_t_4);
     }
-    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 40, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_i = __pyx_t_5;
 
-    /* "py_aligner.pyx":40
+    /* "py_aligner.pyx":41
  *     cdef vector[int] target_vec
  *     for i in target:
  *       target_vec.push_back(i)             # <<<<<<<<<<<<<<
@@ -1681,10 +1684,10 @@ static PyObject *__pyx_pf_10py_aligner_9PyAligner_4align(struct __pyx_obj_10py_a
       __pyx_v_target_vec.push_back(__pyx_v_i);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(0, 40, __pyx_L1_error)
+      __PYX_ERR(0, 41, __pyx_L1_error)
     }
 
-    /* "py_aligner.pyx":39
+    /* "py_aligner.pyx":40
  *       source_vec.push_back(i)
  *     cdef vector[int] target_vec
  *     for i in target:             # <<<<<<<<<<<<<<
@@ -1694,7 +1697,7 @@ static PyObject *__pyx_pf_10py_aligner_9PyAligner_4align(struct __pyx_obj_10py_a
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_aligner.pyx":42
+  /* "py_aligner.pyx":43
  *       target_vec.push_back(i)
  *     cdef vector[pair[int, int] ] alignment_vec
  *     cdef int cost = self.thisptr.align(source_vec, target_vec, &alignment_vec)             # <<<<<<<<<<<<<<
@@ -1703,19 +1706,19 @@ static PyObject *__pyx_pf_10py_aligner_9PyAligner_4align(struct __pyx_obj_10py_a
  */
   __pyx_v_cost = __pyx_v_self->thisptr->align(__pyx_v_source_vec, __pyx_v_target_vec, (&__pyx_v_alignment_vec));
 
-  /* "py_aligner.pyx":43
+  /* "py_aligner.pyx":44
  *     cdef vector[pair[int, int] ] alignment_vec
  *     cdef int cost = self.thisptr.align(source_vec, target_vec, &alignment_vec)
  *     alignment = []             # <<<<<<<<<<<<<<
  *     for i in xrange(0, alignment_vec.size()):
  *       alignment.append((alignment_vec[i].first, alignment_vec[i].second))
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_alignment = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "py_aligner.pyx":44
+  /* "py_aligner.pyx":45
  *     cdef int cost = self.thisptr.align(source_vec, target_vec, &alignment_vec)
  *     alignment = []
  *     for i in xrange(0, alignment_vec.size()):             # <<<<<<<<<<<<<<
@@ -1727,18 +1730,18 @@ static PyObject *__pyx_pf_10py_aligner_9PyAligner_4align(struct __pyx_obj_10py_a
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_7; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
 
-    /* "py_aligner.pyx":45
+    /* "py_aligner.pyx":46
  *     alignment = []
  *     for i in xrange(0, alignment_vec.size()):
  *       alignment.append((alignment_vec[i].first, alignment_vec[i].second))             # <<<<<<<<<<<<<<
  *     return (cost, alignment)
  * 
  */
-    __pyx_t_1 = __Pyx_PyInt_From_int((__pyx_v_alignment_vec[__pyx_v_i]).first); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyInt_From_int((__pyx_v_alignment_vec[__pyx_v_i]).first); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __Pyx_PyInt_From_int((__pyx_v_alignment_vec[__pyx_v_i]).second); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 45, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyInt_From_int((__pyx_v_alignment_vec[__pyx_v_i]).second); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 46, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 45, __pyx_L1_error)
+    __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 46, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_1);
@@ -1746,11 +1749,11 @@ static PyObject *__pyx_pf_10py_aligner_9PyAligner_4align(struct __pyx_obj_10py_a
     PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_4);
     __pyx_t_1 = 0;
     __pyx_t_4 = 0;
-    __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_alignment, __pyx_t_8); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 45, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_alignment, __pyx_t_8); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 46, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   }
 
-  /* "py_aligner.pyx":46
+  /* "py_aligner.pyx":47
  *     for i in xrange(0, alignment_vec.size()):
  *       alignment.append((alignment_vec[i].first, alignment_vec[i].second))
  *     return (cost, alignment)             # <<<<<<<<<<<<<<
@@ -1758,9 +1761,9 @@ static PyObject *__pyx_pf_10py_aligner_9PyAligner_4align(struct __pyx_obj_10py_a
  * cdef class PyGaleChurchAligner:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_cost); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_cost); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_8);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_8);
@@ -1772,7 +1775,7 @@ static PyObject *__pyx_pf_10py_aligner_9PyAligner_4align(struct __pyx_obj_10py_a
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "py_aligner.pyx":33
+  /* "py_aligner.pyx":34
  *   # where the alignment is a list of aligned source/target indices (-1 is used
  *   # in the source or target for insertions/deletions)
  *   def align(self, source, target):             # <<<<<<<<<<<<<<
@@ -1901,7 +1904,7 @@ static PyObject *__pyx_pf_10py_aligner_9PyAligner_8__setstate_cython__(CYTHON_UN
   return __pyx_r;
 }
 
-/* "py_aligner.pyx":50
+/* "py_aligner.pyx":51
  * cdef class PyGaleChurchAligner:
  *   cdef GaleChurchAligner* thisptr
  *   def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -1931,7 +1934,7 @@ static int __pyx_pf_10py_aligner_19PyGaleChurchAligner___cinit__(struct __pyx_ob
   GaleChurchAligner *__pyx_t_1;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "py_aligner.pyx":51
+  /* "py_aligner.pyx":52
  *   cdef GaleChurchAligner* thisptr
  *   def __cinit__(self):
  *     self.thisptr = new GaleChurchAligner()             # <<<<<<<<<<<<<<
@@ -1942,11 +1945,11 @@ static int __pyx_pf_10py_aligner_19PyGaleChurchAligner___cinit__(struct __pyx_ob
     __pyx_t_1 = new GaleChurchAligner();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 51, __pyx_L1_error)
+    __PYX_ERR(0, 52, __pyx_L1_error)
   }
   __pyx_v_self->thisptr = __pyx_t_1;
 
-  /* "py_aligner.pyx":50
+  /* "py_aligner.pyx":51
  * cdef class PyGaleChurchAligner:
  *   cdef GaleChurchAligner* thisptr
  *   def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -1965,7 +1968,7 @@ static int __pyx_pf_10py_aligner_19PyGaleChurchAligner___cinit__(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "py_aligner.pyx":52
+/* "py_aligner.pyx":53
  *   def __cinit__(self):
  *     self.thisptr = new GaleChurchAligner()
  *   def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -1988,7 +1991,7 @@ static void __pyx_pf_10py_aligner_19PyGaleChurchAligner_2__dealloc__(struct __py
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "py_aligner.pyx":53
+  /* "py_aligner.pyx":54
  *     self.thisptr = new GaleChurchAligner()
  *   def __dealloc__(self):
  *     del self.thisptr             # <<<<<<<<<<<<<<
@@ -1997,7 +2000,7 @@ static void __pyx_pf_10py_aligner_19PyGaleChurchAligner_2__dealloc__(struct __py
  */
   delete __pyx_v_self->thisptr;
 
-  /* "py_aligner.pyx":52
+  /* "py_aligner.pyx":53
  *   def __cinit__(self):
  *     self.thisptr = new GaleChurchAligner()
  *   def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2009,7 +2012,7 @@ static void __pyx_pf_10py_aligner_19PyGaleChurchAligner_2__dealloc__(struct __py
   __Pyx_RefNannyFinishContext();
 }
 
-/* "py_aligner.pyx":57
+/* "py_aligner.pyx":58
  *   # where the source and target sentences are lists of the same length that have
  *   # been aligned (one side may contain empty strings)
  *   def align(self, source, target):             # <<<<<<<<<<<<<<
@@ -2048,11 +2051,11 @@ static PyObject *__pyx_pw_10py_aligner_19PyGaleChurchAligner_5align(PyObject *__
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_target)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("align", 1, 2, 2, 1); __PYX_ERR(0, 57, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("align", 1, 2, 2, 1); __PYX_ERR(0, 58, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "align") < 0)) __PYX_ERR(0, 57, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "align") < 0)) __PYX_ERR(0, 58, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2065,7 +2068,7 @@ static PyObject *__pyx_pw_10py_aligner_19PyGaleChurchAligner_5align(PyObject *__
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("align", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 57, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("align", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 58, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_aligner.PyGaleChurchAligner.align", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2113,16 +2116,16 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
   int __pyx_t_16;
   __Pyx_RefNannySetupContext("align", 0);
 
-  /* "py_aligner.pyx":58
+  /* "py_aligner.pyx":59
  *   # been aligned (one side may contain empty strings)
  *   def align(self, source, target):
  *     remove_ws = re.compile(r"[\s\r\n]+");             # <<<<<<<<<<<<<<
  *     cdef vector[int] source_vec
  *     for sent in source:
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_re); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_re); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_compile); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_compile); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -2137,13 +2140,13 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
   }
   __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_2, __pyx_kp_s_s_r_n) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_kp_s_s_r_n);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_remove_ws = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "py_aligner.pyx":60
+  /* "py_aligner.pyx":61
  *     remove_ws = re.compile(r"[\s\r\n]+");
  *     cdef vector[int] source_vec
  *     for sent in source:             # <<<<<<<<<<<<<<
@@ -2154,26 +2157,26 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
     __pyx_t_1 = __pyx_v_source; __Pyx_INCREF(__pyx_t_1); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_source); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_source); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_5 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 61, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_5)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 60, __pyx_L1_error)
+        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 61, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 61, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       } else {
         if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 60, __pyx_L1_error)
+        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 61, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 61, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       }
@@ -2183,7 +2186,7 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 60, __pyx_L1_error)
+          else __PYX_ERR(0, 61, __pyx_L1_error)
         }
         break;
       }
@@ -2192,14 +2195,14 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
     __Pyx_XDECREF_SET(__pyx_v_sent, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "py_aligner.pyx":61
+    /* "py_aligner.pyx":62
  *     cdef vector[int] source_vec
  *     for sent in source:
  *       source_vec.push_back(len(remove_ws.sub("", sent)))             # <<<<<<<<<<<<<<
  *     cdef vector[int] target_vec
  *     for sent in target:
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_remove_ws, __pyx_n_s_sub); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 61, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_remove_ws, __pyx_n_s_sub); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_6 = NULL;
     __pyx_t_7 = 0;
@@ -2216,7 +2219,7 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_kp_s__3, __pyx_v_sent};
-      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 61, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
@@ -2224,13 +2227,13 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_kp_s__3, __pyx_v_sent};
-      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 61, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
     #endif
     {
-      __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 61, __pyx_L1_error)
+      __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 62, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       if (__pyx_t_6) {
         __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
@@ -2241,21 +2244,21 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
       __Pyx_INCREF(__pyx_v_sent);
       __Pyx_GIVEREF(__pyx_v_sent);
       PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_7, __pyx_v_sent);
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_8, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 61, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_8, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_9 = PyObject_Length(__pyx_t_3); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 61, __pyx_L1_error)
+    __pyx_t_9 = PyObject_Length(__pyx_t_3); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     try {
       __pyx_v_source_vec.push_back(__pyx_t_9);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(0, 61, __pyx_L1_error)
+      __PYX_ERR(0, 62, __pyx_L1_error)
     }
 
-    /* "py_aligner.pyx":60
+    /* "py_aligner.pyx":61
  *     remove_ws = re.compile(r"[\s\r\n]+");
  *     cdef vector[int] source_vec
  *     for sent in source:             # <<<<<<<<<<<<<<
@@ -2265,7 +2268,7 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_aligner.pyx":63
+  /* "py_aligner.pyx":64
  *       source_vec.push_back(len(remove_ws.sub("", sent)))
  *     cdef vector[int] target_vec
  *     for sent in target:             # <<<<<<<<<<<<<<
@@ -2276,26 +2279,26 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
     __pyx_t_1 = __pyx_v_target; __Pyx_INCREF(__pyx_t_1); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_target); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_target); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 63, __pyx_L1_error)
+    __pyx_t_5 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 64, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_5)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 63, __pyx_L1_error)
+        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 64, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 63, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       } else {
         if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 63, __pyx_L1_error)
+        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 64, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 63, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       }
@@ -2305,7 +2308,7 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 63, __pyx_L1_error)
+          else __PYX_ERR(0, 64, __pyx_L1_error)
         }
         break;
       }
@@ -2314,14 +2317,14 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
     __Pyx_XDECREF_SET(__pyx_v_sent, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "py_aligner.pyx":64
+    /* "py_aligner.pyx":65
  *     cdef vector[int] target_vec
  *     for sent in target:
  *       target_vec.push_back(len(remove_ws.sub("", sent)))             # <<<<<<<<<<<<<<
  *     cdef vector[AlignmentBead] alignment
  *     cdef double cost = self.thisptr.align(source_vec, target_vec, &alignment)
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_remove_ws, __pyx_n_s_sub); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 64, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_remove_ws, __pyx_n_s_sub); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 65, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_8 = NULL;
     __pyx_t_7 = 0;
@@ -2338,7 +2341,7 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[3] = {__pyx_t_8, __pyx_kp_s__3, __pyx_v_sent};
-      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 65, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
@@ -2346,13 +2349,13 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[3] = {__pyx_t_8, __pyx_kp_s__3, __pyx_v_sent};
-      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 65, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_GOTREF(__pyx_t_3);
     } else
     #endif
     {
-      __pyx_t_6 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 64, __pyx_L1_error)
+      __pyx_t_6 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       if (__pyx_t_8) {
         __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_8); __pyx_t_8 = NULL;
@@ -2363,21 +2366,21 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
       __Pyx_INCREF(__pyx_v_sent);
       __Pyx_GIVEREF(__pyx_v_sent);
       PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_7, __pyx_v_sent);
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 65, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_9 = PyObject_Length(__pyx_t_3); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 64, __pyx_L1_error)
+    __pyx_t_9 = PyObject_Length(__pyx_t_3); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 65, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     try {
       __pyx_v_target_vec.push_back(__pyx_t_9);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(0, 64, __pyx_L1_error)
+      __PYX_ERR(0, 65, __pyx_L1_error)
     }
 
-    /* "py_aligner.pyx":63
+    /* "py_aligner.pyx":64
  *       source_vec.push_back(len(remove_ws.sub("", sent)))
  *     cdef vector[int] target_vec
  *     for sent in target:             # <<<<<<<<<<<<<<
@@ -2387,7 +2390,7 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_aligner.pyx":66
+  /* "py_aligner.pyx":67
  *       target_vec.push_back(len(remove_ws.sub("", sent)))
  *     cdef vector[AlignmentBead] alignment
  *     cdef double cost = self.thisptr.align(source_vec, target_vec, &alignment)             # <<<<<<<<<<<<<<
@@ -2396,31 +2399,31 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
  */
   __pyx_v_cost = __pyx_v_self->thisptr->align(__pyx_v_source_vec, __pyx_v_target_vec, (&__pyx_v_alignment));
 
-  /* "py_aligner.pyx":67
+  /* "py_aligner.pyx":68
  *     cdef vector[AlignmentBead] alignment
  *     cdef double cost = self.thisptr.align(source_vec, target_vec, &alignment)
  *     aligned_source = []             # <<<<<<<<<<<<<<
  *     aligned_target = []
  *     cdef int i, s, t
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_aligned_source = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "py_aligner.pyx":68
+  /* "py_aligner.pyx":69
  *     cdef double cost = self.thisptr.align(source_vec, target_vec, &alignment)
  *     aligned_source = []
  *     aligned_target = []             # <<<<<<<<<<<<<<
  *     cdef int i, s, t
  *     cdef AlignmentBead bead
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_aligned_target = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "py_aligner.pyx":71
+  /* "py_aligner.pyx":72
  *     cdef int i, s, t
  *     cdef AlignmentBead bead
  *     for i in xrange(0, alignment.size()):             # <<<<<<<<<<<<<<
@@ -2432,7 +2435,7 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
   for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_11; __pyx_t_7+=1) {
     __pyx_v_i = __pyx_t_7;
 
-    /* "py_aligner.pyx":72
+    /* "py_aligner.pyx":73
  *     cdef AlignmentBead bead
  *     for i in xrange(0, alignment.size()):
  *       bead = alignment[i]             # <<<<<<<<<<<<<<
@@ -2441,7 +2444,7 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
  */
     __pyx_v_bead = (__pyx_v_alignment[__pyx_v_i]);
 
-    /* "py_aligner.pyx":73
+    /* "py_aligner.pyx":74
  *     for i in xrange(0, alignment.size()):
  *       bead = alignment[i]
  *       source_sent = ""             # <<<<<<<<<<<<<<
@@ -2451,7 +2454,7 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
     __Pyx_INCREF(__pyx_kp_s__3);
     __Pyx_XDECREF_SET(__pyx_v_source_sent, __pyx_kp_s__3);
 
-    /* "py_aligner.pyx":74
+    /* "py_aligner.pyx":75
  *       bead = alignment[i]
  *       source_sent = ""
  *       for s in xrange(bead.s_start, bead.s_end):             # <<<<<<<<<<<<<<
@@ -2463,27 +2466,27 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
     for (__pyx_t_14 = __pyx_v_bead.s_start; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
       __pyx_v_s = __pyx_t_14;
 
-      /* "py_aligner.pyx":75
+      /* "py_aligner.pyx":76
  *       source_sent = ""
  *       for s in xrange(bead.s_start, bead.s_end):
  *         if len(source_sent) == 0:             # <<<<<<<<<<<<<<
  *           source_sent = source[s].strip()
  *         else:
  */
-      __pyx_t_4 = PyObject_Length(__pyx_v_source_sent); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 75, __pyx_L1_error)
+      __pyx_t_4 = PyObject_Length(__pyx_v_source_sent); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 76, __pyx_L1_error)
       __pyx_t_15 = ((__pyx_t_4 == 0) != 0);
       if (__pyx_t_15) {
 
-        /* "py_aligner.pyx":76
+        /* "py_aligner.pyx":77
  *       for s in xrange(bead.s_start, bead.s_end):
  *         if len(source_sent) == 0:
  *           source_sent = source[s].strip()             # <<<<<<<<<<<<<<
  *         else:
  *           source_sent += " " + source[s].strip()
  */
-        __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_source, __pyx_v_s, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_source, __pyx_v_s, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 77, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_t_3 = NULL;
@@ -2498,13 +2501,13 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
         }
         __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
         __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __Pyx_DECREF_SET(__pyx_v_source_sent, __pyx_t_1);
         __pyx_t_1 = 0;
 
-        /* "py_aligner.pyx":75
+        /* "py_aligner.pyx":76
  *       source_sent = ""
  *       for s in xrange(bead.s_start, bead.s_end):
  *         if len(source_sent) == 0:             # <<<<<<<<<<<<<<
@@ -2514,7 +2517,7 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
         goto __pyx_L11;
       }
 
-      /* "py_aligner.pyx":78
+      /* "py_aligner.pyx":79
  *           source_sent = source[s].strip()
  *         else:
  *           source_sent += " " + source[s].strip()             # <<<<<<<<<<<<<<
@@ -2522,9 +2525,9 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
  *       for t in xrange(bead.t_start, bead.t_end):
  */
       /*else*/ {
-        __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_source, __pyx_v_s, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_source, __pyx_v_s, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 79, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_strip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_strip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 79, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_t_2 = NULL;
@@ -2539,13 +2542,13 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
         }
         __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_3 = PyNumber_Add(__pyx_kp_s__4, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
+        __pyx_t_3 = PyNumber_Add(__pyx_kp_s__4, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 79, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_1 = PyNumber_InPlaceAdd(__pyx_v_source_sent, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
+        __pyx_t_1 = PyNumber_InPlaceAdd(__pyx_v_source_sent, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __Pyx_DECREF_SET(__pyx_v_source_sent, __pyx_t_1);
@@ -2554,7 +2557,7 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
       __pyx_L11:;
     }
 
-    /* "py_aligner.pyx":79
+    /* "py_aligner.pyx":80
  *         else:
  *           source_sent += " " + source[s].strip()
  *       target_sent = ""             # <<<<<<<<<<<<<<
@@ -2564,7 +2567,7 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
     __Pyx_INCREF(__pyx_kp_s__3);
     __Pyx_XDECREF_SET(__pyx_v_target_sent, __pyx_kp_s__3);
 
-    /* "py_aligner.pyx":80
+    /* "py_aligner.pyx":81
  *           source_sent += " " + source[s].strip()
  *       target_sent = ""
  *       for t in xrange(bead.t_start, bead.t_end):             # <<<<<<<<<<<<<<
@@ -2576,27 +2579,27 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
     for (__pyx_t_14 = __pyx_v_bead.t_start; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
       __pyx_v_t = __pyx_t_14;
 
-      /* "py_aligner.pyx":81
+      /* "py_aligner.pyx":82
  *       target_sent = ""
  *       for t in xrange(bead.t_start, bead.t_end):
  *         if len(target_sent) == 0:             # <<<<<<<<<<<<<<
  *           target_sent = target[t].strip()
  *         else:
  */
-      __pyx_t_4 = PyObject_Length(__pyx_v_target_sent); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 81, __pyx_L1_error)
+      __pyx_t_4 = PyObject_Length(__pyx_v_target_sent); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 82, __pyx_L1_error)
       __pyx_t_15 = ((__pyx_t_4 == 0) != 0);
       if (__pyx_t_15) {
 
-        /* "py_aligner.pyx":82
+        /* "py_aligner.pyx":83
  *       for t in xrange(bead.t_start, bead.t_end):
  *         if len(target_sent) == 0:
  *           target_sent = target[t].strip()             # <<<<<<<<<<<<<<
  *         else:
  *           target_sent += " " + target[t].strip()
  */
-        __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_target, __pyx_v_t, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_target, __pyx_v_t, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 83, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_t_3 = NULL;
@@ -2611,13 +2614,13 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
         }
         __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
         __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __Pyx_DECREF_SET(__pyx_v_target_sent, __pyx_t_1);
         __pyx_t_1 = 0;
 
-        /* "py_aligner.pyx":81
+        /* "py_aligner.pyx":82
  *       target_sent = ""
  *       for t in xrange(bead.t_start, bead.t_end):
  *         if len(target_sent) == 0:             # <<<<<<<<<<<<<<
@@ -2627,7 +2630,7 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
         goto __pyx_L14;
       }
 
-      /* "py_aligner.pyx":84
+      /* "py_aligner.pyx":85
  *           target_sent = target[t].strip()
  *         else:
  *           target_sent += " " + target[t].strip()             # <<<<<<<<<<<<<<
@@ -2635,9 +2638,9 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
  *       aligned_target.append(target_sent)
  */
       /*else*/ {
-        __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_target, __pyx_v_t, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 84, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_target, __pyx_v_t, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 85, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_strip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 84, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_strip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 85, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_t_2 = NULL;
@@ -2652,13 +2655,13 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
         }
         __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_3 = PyNumber_Add(__pyx_kp_s__4, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 84, __pyx_L1_error)
+        __pyx_t_3 = PyNumber_Add(__pyx_kp_s__4, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 85, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_1 = PyNumber_InPlaceAdd(__pyx_v_target_sent, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+        __pyx_t_1 = PyNumber_InPlaceAdd(__pyx_v_target_sent, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __Pyx_DECREF_SET(__pyx_v_target_sent, __pyx_t_1);
@@ -2667,33 +2670,33 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
       __pyx_L14:;
     }
 
-    /* "py_aligner.pyx":85
+    /* "py_aligner.pyx":86
  *         else:
  *           target_sent += " " + target[t].strip()
  *       aligned_source.append(source_sent)             # <<<<<<<<<<<<<<
  *       aligned_target.append(target_sent)
  *     return (cost, aligned_source, aligned_target)
  */
-    __pyx_t_16 = __Pyx_PyList_Append(__pyx_v_aligned_source, __pyx_v_source_sent); if (unlikely(__pyx_t_16 == ((int)-1))) __PYX_ERR(0, 85, __pyx_L1_error)
+    __pyx_t_16 = __Pyx_PyList_Append(__pyx_v_aligned_source, __pyx_v_source_sent); if (unlikely(__pyx_t_16 == ((int)-1))) __PYX_ERR(0, 86, __pyx_L1_error)
 
-    /* "py_aligner.pyx":86
+    /* "py_aligner.pyx":87
  *           target_sent += " " + target[t].strip()
  *       aligned_source.append(source_sent)
  *       aligned_target.append(target_sent)             # <<<<<<<<<<<<<<
  *     return (cost, aligned_source, aligned_target)
  */
-    __pyx_t_16 = __Pyx_PyList_Append(__pyx_v_aligned_target, __pyx_v_target_sent); if (unlikely(__pyx_t_16 == ((int)-1))) __PYX_ERR(0, 86, __pyx_L1_error)
+    __pyx_t_16 = __Pyx_PyList_Append(__pyx_v_aligned_target, __pyx_v_target_sent); if (unlikely(__pyx_t_16 == ((int)-1))) __PYX_ERR(0, 87, __pyx_L1_error)
   }
 
-  /* "py_aligner.pyx":87
+  /* "py_aligner.pyx":88
  *       aligned_source.append(source_sent)
  *       aligned_target.append(target_sent)
  *     return (cost, aligned_source, aligned_target)             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_cost); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_cost); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
@@ -2708,7 +2711,7 @@ static PyObject *__pyx_pf_10py_aligner_19PyGaleChurchAligner_4align(struct __pyx
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "py_aligner.pyx":57
+  /* "py_aligner.pyx":58
  *   # where the source and target sentences are lists of the same length that have
  *   # been aligned (one side may contain empty strings)
  *   def align(self, source, target):             # <<<<<<<<<<<<<<
@@ -3120,9 +3123,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   #if PY_MAJOR_VERSION >= 3
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) __PYX_ERR(0, 44, __pyx_L1_error)
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) __PYX_ERR(0, 45, __pyx_L1_error)
   #else
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) __PYX_ERR(0, 44, __pyx_L1_error)
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) __PYX_ERR(0, 45, __pyx_L1_error)
   #endif
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 2, __pyx_L1_error)
   return 0;
@@ -3221,25 +3224,25 @@ static int __Pyx_modinit_type_init_code(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_10py_aligner_PyAligner) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_10py_aligner_PyAligner) < 0) __PYX_ERR(0, 25, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_10py_aligner_PyAligner.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_10py_aligner_PyAligner.tp_dictoffset && __pyx_type_10py_aligner_PyAligner.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_10py_aligner_PyAligner.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PyAligner, (PyObject *)&__pyx_type_10py_aligner_PyAligner) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_10py_aligner_PyAligner) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PyAligner, (PyObject *)&__pyx_type_10py_aligner_PyAligner) < 0) __PYX_ERR(0, 25, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_10py_aligner_PyAligner) < 0) __PYX_ERR(0, 25, __pyx_L1_error)
   __pyx_ptype_10py_aligner_PyAligner = &__pyx_type_10py_aligner_PyAligner;
-  if (PyType_Ready(&__pyx_type_10py_aligner_PyGaleChurchAligner) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_10py_aligner_PyGaleChurchAligner) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_10py_aligner_PyGaleChurchAligner.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_10py_aligner_PyGaleChurchAligner.tp_dictoffset && __pyx_type_10py_aligner_PyGaleChurchAligner.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_10py_aligner_PyGaleChurchAligner.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PyGaleChurchAligner, (PyObject *)&__pyx_type_10py_aligner_PyGaleChurchAligner) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_10py_aligner_PyGaleChurchAligner) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PyGaleChurchAligner, (PyObject *)&__pyx_type_10py_aligner_PyGaleChurchAligner) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_10py_aligner_PyGaleChurchAligner) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __pyx_ptype_10py_aligner_PyGaleChurchAligner = &__pyx_type_10py_aligner_PyGaleChurchAligner;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -3469,22 +3472,22 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "py_aligner.pyx":6
+  /* "py_aligner.pyx":7
  * from libcpp.vector cimport vector
  * from libcpp.utility cimport pair
  * import re             # <<<<<<<<<<<<<<
  * 
- * cdef extern from "aligner.h":
+ * cdef extern from "cpp/aligner.h":
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_re, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_re, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_re, __pyx_t_1) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_re, __pyx_t_1) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "py_aligner.pyx":1
  * # distutils: language = c++             # <<<<<<<<<<<<<<
- * # distutils: sources = aligner.cpp gale_church_aligner.cpp
- * 
+ * # distutils: sources = cpp/aligner.cpp cpp/gale_church_aligner.cpp
+ * # distutils: include_dirs = .
  */
   __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

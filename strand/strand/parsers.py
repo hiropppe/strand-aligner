@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 # parsers.py
 #
 # Includes a few target functions for lxml parsers.
@@ -153,6 +151,7 @@ class StrandTarget(CleanupTarget):
 
 
 # test
+"""
 if __name__ == "__main__":
     import bs4
     import sys
@@ -183,3 +182,4 @@ if __name__ == "__main__":
 
     tagchunks = apply_parser(html, parser)
     print(tagchunks)
+"""

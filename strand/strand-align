@@ -15,9 +15,10 @@ from io import StringIO
 import bs4
 from lxml import etree
 
-import parsers
-import strand
-from segmenter import Segmenter
+from strand import parsers
+from strand import strand
+from strand.segmenter import Segmenter
+
 from py_aligner import PyGaleChurchAligner
 
 

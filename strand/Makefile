@@ -21,10 +21,10 @@ CXX = /usr/bin/g++
 CXXFLAGS=$(OPTS) $(INCS)
 
 SRC_FILES = \
-  aligner.cpp \
-  gale_church_aligner.cpp
+  cpp/aligner.cpp \
+  cpp/gale_church_aligner.cpp
 
-MAIN_FILE = main.cpp
+MAIN_FILE = cpp/main.cpp
 
 OBJ_FILES = $(SRC_FILES:%.cpp=%.o)
 MAIN_OBJ = $(MAIN_FILE:%.cpp=%.o)
