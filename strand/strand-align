@@ -2,6 +2,7 @@
 
 # Runs STRAND on the gzipped output of the CommonCrawl miner.
 
+import base64
 import click
 import codecs
 import errno
@@ -27,7 +28,9 @@ from py_aligner import PyGaleChurchAligner
 @click.option("--num-entries", "-n", help="Maximum number of entries to examine, set to 0 for no limit")
 @click.option("--out-prefix", "-o", help="Parallel data will be output to this location")
 @click.option("--sentence-aligner", "-sa", default=None, type=click.Choice(["GC"]), help="Sentence alignment implementation")
-def main(input_file, num_entries, sentence_aligner, out_prefix):
+@click.option("--input-base64", "-ib64", is_flag=True, default=False, help="See input html as base64 encoded")
+@click.option("--output-base64", "-ob64", is_flag=True, default=False, help="Output base64 encoded text")
+def main(input_file, num_entries, out_prefix, sentence_aligner, input_base64, output_base64):
     # Initialize the HTML parser and aligners
     strand_parser = etree.HTMLParser(encoding="utf-8",
                                      target=parsers.StrandTarget())
@@ -39,6 +42,7 @@ def main(input_file, num_entries, sentence_aligner, out_prefix):
     strand_aligner = strand.StrandAligner()
 
     # Mapping from a full language name to a two letter code:
+    """
     lang_to_code = {"English": "en",
                     "Spanish": "es",
                     "French": "fr",
@@ -62,6 +66,7 @@ def main(input_file, num_entries, sentence_aligner, out_prefix):
                     "Kurdish Sorani": "ckb",
                     "Pashto": "ps",
                     "Somali": "so"}
+    """
 
     if input_file == "":
         print("No input file given")
@@ -77,13 +82,13 @@ def main(input_file, num_entries, sentence_aligner, out_prefix):
     segmenters = {}
     line_counters = {}
     # We will always be working with English
-    segmenters["en"] = Segmenter("English")
+    segmenters["en"] = Segmenter("en")
 
     in_file = gzip.open(input_file, "r")
     linecount = 0
     for line in in_file:
         line = line.decode("utf8")
-        (key, webpages) = parse_entry(line)
+        (key, webpages) = parse_entry(line, b64=input_base64)
         if len(key) == 0:
             print("Malformed entry at line", linecount)
         else:
@@ -106,15 +111,13 @@ def main(input_file, num_entries, sentence_aligner, out_prefix):
                     pass
 
             # if language_pair[0] in data_by_language and language_pair[1] in data_by_language:
-            if "English" in data_by_language:
-                target_lang = "English"
-                target_code = lang_to_code[target_lang]
+            if "en" in data_by_language:
+                target_lang = "en"
                 # Loop over pairs
                 for source_lang in data_by_language:
                     if source_lang == target_lang:
                         continue
-                    source_code = lang_to_code[source_lang]
-                    pair_code = "%s-%s" % (source_code, target_code)
+                    pair_code = "%s-%s" % (source_lang, target_lang)
                     # Check to see if we have initialized data for this pair
                     # Output files:
                     if pair_code not in output_files:
@@ -122,52 +125,57 @@ def main(input_file, num_entries, sentence_aligner, out_prefix):
                         pair_files["bi"] = codecs.open(
                             "%s.%s" % (out_prefix, pair_code),
                             encoding="utf-8", mode="w")
-                        pair_files["source"] = codecs.open(
-                            "%s.%s.%s" % (out_prefix, pair_code, source_code),
-                            encoding="utf-8", mode="w")
-                        pair_files["target"] = codecs.open(
-                            "%s.%s.%s" % (out_prefix, pair_code, target_code),
-                            encoding="utf-8", mode="w")
-                        pair_files["annotation"] = codecs.open(
-                            "%s.%s.annotation" % (out_prefix, pair_code),
-                            encoding="utf-8", mode="w")
+                        #pair_files["source"] = codecs.open(
+                        #    "%s.%s.%s" % (out_prefix, pair_code, source_lang),
+                        #    encoding="utf-8", mode="w")
+                        #pair_files["target"] = codecs.open(
+                        #    "%s.%s.%s" % (out_prefix, pair_code, target_lang),
+                        #    encoding="utf-8", mode="w")
+                        #pair_files["annotation"] = codecs.open(
+                        #    "%s.%s.annotation" % (out_prefix, pair_code),
+                        #    encoding="utf-8", mode="w")
                         output_files[pair_code] = pair_files
                     # Line counters
                     if pair_code not in line_counters:
                         line_counters[pair_code] = 0
                     # Sentence segmenters
-                    if source_code not in segmenters:
-                        segmenters[source_code] = Segmenter(source_lang)
+                    if source_lang not in segmenters:
+                        segmenters[source_lang] = Segmenter(source_lang)
 
                     source_strand = data_by_language[source_lang]["strand"].split("\n")
                     target_strand = data_by_language[target_lang]["strand"].split("\n")
                     (bi_sents, source_sents, target_sents, dp) = strand_extract_and_clean(
                         strand_aligner, sent_aligner, source_strand, target_strand,
-                        segmenters[source_code], segmenters[target_code])
+                        segmenters[source_lang], segmenters[target_lang])
 
                     # If we have any data, write it along with the annotation
                     if len(source_sents) == len(target_sents) and len(source_sents) > 0:
                         bi_out = output_files[pair_code]["bi"]
                         print(dp, file=bi_out)
                         for b in bi_sents:
+                            src_text = b[1]
+                            tgt_text = b[3]
+                            if output_base64:
+                                src_text = base64.b64encode(src_text.encode("utf8")).decode("utf8")
+                                tgt_text = base64.b64encode(tgt_text.encode("utf8")).decode("utf8")
                             print("{:d}\t{:s}\t{:d}\t{:s}\t{:f}".format(
-                                b[0], b[1], b[2], b[3], b[4]), file=bi_out)
-                        source_out = output_files[pair_code]["source"]
-                        for s in source_sents:
-                            print(s, file=source_out)
-                        target_out = output_files[pair_code]["target"]
-                        for t in target_sents:
-                            print(t, file=target_out)
+                                b[0], src_text, b[2], tgt_text, b[4]), file=bi_out)
+                        #source_out = output_files[pair_code]["source"]
+                        #for s in source_sents:
+                        #    print(s, file=source_out)
+                        #target_out = output_files[pair_code]["target"]
+                        #for t in target_sents:
+                        #    print(t, file=target_out)
 
-                        current_offset = line_counters[pair_code]
-                        increment = len(source_sents)
+                        #current_offset = line_counters[pair_code]
+                        #increment = len(source_sents)
 
-                        annotation_out = output_files[pair_code]["annotation"]
-                        print("{:s}\t{:s}\t{:d}\t{:d}\t{:f}".format(data_by_language[source_lang]["url"],
-                                                                    data_by_language[target_lang]["url"],
-                                                                    current_offset,
-                                                                    increment,
-                                                                    dp), file=annotation_out)
+                        #annotation_out = output_files[pair_code]["annotation"]
+                        #print("{:s}\t{:s}\t{:d}\t{:d}\t{:f}".format(data_by_language[source_lang]["url"],
+                        #                                            data_by_language[target_lang]["url"],
+                        #                                            current_offset,
+                        #                                            increment,
+                        #                                            dp), file=annotation_out)
 
                         line_counters[pair_code] += len(source_sents)
 
@@ -179,9 +187,9 @@ def main(input_file, num_entries, sentence_aligner, out_prefix):
     # Close files
     for pair in output_files:
         output_files[pair]["bi"].close()
-        output_files[pair]["source"].close()
-        output_files[pair]["target"].close()
-        output_files[pair]["annotation"].close()
+        #output_files[pair]["source"].close()
+        #output_files[pair]["target"].close()
+        #output_files[pair]["annotation"].close()
 
 # ----------------------------------------
 # END MAIN
@@ -265,7 +273,7 @@ def apply_parser(html, parser):
 # The HTML will have both tabs and newlines escaped
 
 
-def parse_entry(line):
+def parse_entry(line, b64=False):
     fields = line.split("\t")
     if len(fields) < 4 or ((len(fields) - 1) % 3) != 0:
         print("\n", len(fields))
@@ -283,7 +291,11 @@ def parse_entry(line):
         webpage = {}
         webpage['language'] = fields[offset]
         webpage['url'] = fields[offset+1]
-        webpage['html'] = unescape_tabs_and_newlines(fields[offset+2])
+        if b64:
+            html = base64.b64decode(fields[offset+2]).decode("utf-8").replace("\t", " ")
+        else:
+            html = fields[offset+2]
+        webpage['html'] = unescape_tabs_and_newlines(html)
         webpages.append(webpage)
         offset += 3
 

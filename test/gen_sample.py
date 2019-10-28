@@ -6,8 +6,8 @@ from html_similarity import style_similarity, structural_similarity, similarity
 
 
 @click.command()
-@click.option("--lang1", "-l1", default="English", type=click.Choice(["English", "Japanese"]), required=True)
-@click.option("--lang2", "-l2", default="Japanese", type=click.Choice(["English", "Japanese"]), required=True)
+@click.option("--lang1", "-l1", default="en", type=click.Choice(["en", "ja"]), required=True)
+@click.option("--lang2", "-l2", default="ja", type=click.Choice(["en", "ja"]), required=True)
 @click.option("--url1", "-u1", required=False)
 @click.option("--url2", "-u2", required=False)
 @click.option("--file1", "-f1", required=False)

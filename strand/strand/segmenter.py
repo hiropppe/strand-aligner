@@ -11,11 +11,11 @@ from nltk.tokenize import PunktSentenceTokenizer
 
 class Segmenter:
     def __init__(self, language):
-        if language.lower() == "japanese":
+        if language.lower() == "ja":
             self.sent_breaker = nltk.RegexpTokenizer('[^　！？。]+(?:！|？|。|$)')
             #self.sent_breaker = nltk.RegexpTokenizer('[^　！？。]*[！？。]')
         else:
-            nltk.download("punkt")
+            #nltk.download("punkt")
             self.sent_breaker = PunktSentenceTokenizer()
 
     # Perform sentence breaking on a line of text and return an array of sentences
