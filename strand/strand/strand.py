@@ -5,7 +5,6 @@
 # An implementation of the STRAND HTML aligner as described in
 # "The Web as a Parallel Corpus" (Resnik and Smith, 2003).
 
-import numpy
 import re
 
 import py_aligner
@@ -102,7 +101,7 @@ class StrandAligner:
 
         # Compute the difference percentage: the total number of mismatched tokens
         # divided by the maximum possible number of mismatched tokens
-        difference_percentage = -float(alignment_cost)
+        difference_percentage = abs(alignment_cost)
         difference_percentage /= max_difference
 
         # Lengths of aligned source and target chunks, used in computing Pearson's
