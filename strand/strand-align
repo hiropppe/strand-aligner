@@ -125,15 +125,15 @@ def main(input_file, num_entries, out_prefix, sentence_aligner, input_base64, ou
                         pair_files["bi"] = codecs.open(
                             "%s.%s" % (out_prefix, pair_code),
                             encoding="utf-8", mode="w")
-                        #pair_files["source"] = codecs.open(
+                        # pair_files["source"] = codecs.open(
                         #    "%s.%s.%s" % (out_prefix, pair_code, source_lang),
                         #    encoding="utf-8", mode="w")
-                        #pair_files["target"] = codecs.open(
+                        # pair_files["target"] = codecs.open(
                         #    "%s.%s.%s" % (out_prefix, pair_code, target_lang),
                         #    encoding="utf-8", mode="w")
-                        #pair_files["annotation"] = codecs.open(
-                        #    "%s.%s.annotation" % (out_prefix, pair_code),
-                        #    encoding="utf-8", mode="w")
+                        pair_files["ann"] = codecs.open(
+                           "%s.%s.ann" % (out_prefix, pair_code),
+                           encoding="utf-8", mode="w")
                         output_files[pair_code] = pair_files
                     # Line counters
                     if pair_code not in line_counters:
@@ -144,14 +144,13 @@ def main(input_file, num_entries, out_prefix, sentence_aligner, input_base64, ou
 
                     source_strand = data_by_language[source_lang]["strand"].split("\n")
                     target_strand = data_by_language[target_lang]["strand"].split("\n")
-                    (bi_sents, source_sents, target_sents, dp) = strand_extract_and_clean(
+                    (bi_sents, source_sents, target_sents, dp, source_seqlen, target_seqlen) = strand_extract_and_clean(
                         strand_aligner, sent_aligner, source_strand, target_strand,
                         segmenters[source_lang], segmenters[target_lang])
 
                     # If we have any data, write it along with the annotation
                     if len(source_sents) == len(target_sents) and len(source_sents) > 0:
                         bi_out = output_files[pair_code]["bi"]
-                        print(dp, file=bi_out)
                         for b in bi_sents:
                             src_text = b[1]
                             tgt_text = b[3]
@@ -160,22 +159,25 @@ def main(input_file, num_entries, out_prefix, sentence_aligner, input_base64, ou
                                 tgt_text = base64.b64encode(tgt_text.encode("utf8")).decode("utf8")
                             print("{:d}\t{:s}\t{:d}\t{:s}\t{:f}".format(
                                 b[0], src_text, b[2], tgt_text, b[4]), file=bi_out)
+
                         #source_out = output_files[pair_code]["source"]
-                        #for s in source_sents:
+                        # for s in source_sents:
                         #    print(s, file=source_out)
                         #target_out = output_files[pair_code]["target"]
-                        #for t in target_sents:
+                        # for t in target_sents:
                         #    print(t, file=target_out)
 
-                        #current_offset = line_counters[pair_code]
-                        #increment = len(source_sents)
+                        current_offset = line_counters[pair_code]
+                        increment = len(source_sents)
 
-                        #annotation_out = output_files[pair_code]["annotation"]
-                        #print("{:s}\t{:s}\t{:d}\t{:d}\t{:f}".format(data_by_language[source_lang]["url"],
-                        #                                            data_by_language[target_lang]["url"],
-                        #                                            current_offset,
-                        #                                            increment,
-                        #                                            dp), file=annotation_out)
+                        ann_out = output_files[pair_code]["ann"]
+                        print("{:s}\t{:s}\t{:d}\t{:d}\t{:f}\t{:d}\t{:d}".format(data_by_language[source_lang]["url"],
+                                                                                data_by_language[target_lang]["url"],
+                                                                                current_offset,
+                                                                                increment,
+                                                                                dp,
+                                                                                source_seqlen,
+                                                                                target_seqlen), file=ann_out)
 
                         line_counters[pair_code] += len(source_sents)
 
@@ -187,9 +189,9 @@ def main(input_file, num_entries, out_prefix, sentence_aligner, input_base64, ou
     # Close files
     for pair in output_files:
         output_files[pair]["bi"].close()
-        #output_files[pair]["source"].close()
-        #output_files[pair]["target"].close()
-        #output_files[pair]["annotation"].close()
+        # output_files[pair]["source"].close()
+        # output_files[pair]["target"].close()
+        output_files[pair]["ann"].close()
 
 # ----------------------------------------
 # END MAIN
@@ -236,7 +238,7 @@ def strand_extract_and_clean(strand_aligner, sent_aligner, source, target, sourc
                         bi_out.append((s_sent, t_sent, c))
                         source_out.append(s_sent)
                         target_out.append(t_sent)
-    return (bi_out, source_out, target_out, dp)
+    return (bi_out, source_out, target_out, dp, len(source_tagchunks), len(target_tagchunks))
 
 # Usese BeautifulSoup to handle encodings (taken from lxml tutorial)
 
