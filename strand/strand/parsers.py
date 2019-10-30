@@ -109,8 +109,9 @@ class StrandTarget(CleanupTarget):
         super(StrandTarget, self).__init__()
         self.current_chunk = StringIO()
         # Tags which are not shown in the strand output. Taken from Herve's code.
-        self.strand_ignore_tags = {'a', 'b', 'strong', 'i', 'em', 'font', 'span',
+        self.strand_ignore_tags = {'b', 'strong', 'i', 'em', 'font', 'span',
                                    'nobr', 'sup', 'sub', 'meta', 'link', 'acronym'}
+        self.current_start_tag = None
 
     def start_impl(self, tag, attrs):
         if len(self.ignore_stack) == 0:
@@ -121,7 +122,15 @@ class StrandTarget(CleanupTarget):
                     self.current_chunk.write(" ")
             else:
                 self.clear_current_chunk()
-                self.buffer.write("[START:%s]\n" % tag)
+                if tag != "a":
+                    self.buffer.write("[START:{:s}]\n".format(tag))
+                    self.current_start_tag = "[START:{:s}]".format(tag)
+                elif "href" in attrs and self.current_start_tag is not None:
+                    val = self.buffer.getvalue()
+                    pos = val.rfind(self.current_start_tag)
+                    data = val[pos: pos + len(self.current_start_tag) - 1] + " " + attrs["href"] + "]\n"
+                    self.buffer.seek(pos)
+                    self.buffer.write(data)
 
     def end_impl(self, tag):
         if len(self.ignore_stack) == 0:
@@ -129,8 +138,10 @@ class StrandTarget(CleanupTarget):
                 if tag in self.word_break_tags:
                     self.current_chunk.write(" ")
             else:
-                self.clear_current_chunk()
-                self.buffer.write("[END:%s]\n" % tag)
+                if tag != "a":
+                    self.clear_current_chunk()
+                    self.buffer.write("[END:%s]\n" % tag)
+                self.current_start_tag = None
 
     def data_impl(self, data):
         self.current_chunk.write(self.format_whitespace(data))
@@ -150,8 +161,6 @@ class StrandTarget(CleanupTarget):
             self.current_chunk = StringIO()
 
 
-# test
-"""
 if __name__ == "__main__":
     import bs4
     import sys
@@ -182,4 +191,3 @@ if __name__ == "__main__":
 
     tagchunks = apply_parser(html, parser)
     print(tagchunks)
-"""
