@@ -30,10 +30,8 @@ from py_aligner import PyGaleChurchAligner
 @click.option("--sentence-aligner", "-sa", default=None, type=click.Choice(["GC"]), help="Sentence alignment implementation")
 @click.option("--input-base64", "-ib64", is_flag=True, default=False, help="See input html as base64 encoded")
 @click.option("--output-base64", "-ob64", is_flag=True, default=False, help="Output base64 encoded text")
-def main(input_file, num_entries, out_prefix, sentence_aligner, input_base64, output_base64):
-    # Initialize the HTML parser and aligners
-    strand_parser = etree.HTMLParser(encoding="utf-8",
-                                     target=parsers.StrandTarget())
+@click.option("--align-href", "-ah", is_flag=True, default=False, help="align href attribute value or not")
+def main(input_file, num_entries, out_prefix, sentence_aligner, input_base64, output_base64, align_href):
     if sentence_aligner == "GC":
         sent_aligner = PyGaleChurchAligner()
     else:
@@ -102,9 +100,11 @@ def main(input_file, num_entries, out_prefix, sentence_aligner, input_base64, ou
                 lang = webpage['language']
                 data_by_language[lang]["url"] = webpage['url']
                 try:
+                    # Initialize the HTML parser and aligners
+                    strand_parser = etree.HTMLParser(encoding="utf-8",
+                                                     target=parsers.StrandTarget(webpage['language'], align_href))
                     tagchunks = apply_parser(webpage['html'], strand_parser)
-                    # print(tagchunks, file=open("{:s}.tagchunks.{:s}".format(
-                    #     out_prefix, lang_to_code[lang]), "w"))
+                    # print(tagchunks, file=open("{:s}.tagchunks.{:s}".format(out_prefix, lang), "w"))
                     data_by_language[lang]["strand"] = tagchunks
                 except:
                     print("Error parsing %s HTML at line %d" % (lang, linecount))
@@ -132,8 +132,8 @@ def main(input_file, num_entries, out_prefix, sentence_aligner, input_base64, ou
                         #    "%s.%s.%s" % (out_prefix, pair_code, target_lang),
                         #    encoding="utf-8", mode="w")
                         pair_files["ann"] = codecs.open(
-                           "%s.%s.ann" % (out_prefix, pair_code),
-                           encoding="utf-8", mode="w")
+                            "%s.%s.ann" % (out_prefix, pair_code),
+                            encoding="utf-8", mode="w")
                         output_files[pair_code] = pair_files
                     # Line counters
                     if pair_code not in line_counters:

@@ -5,8 +5,10 @@
 # StrandTarget: Produces data to be aligned with STRAND
 
 import re
+import tldextract
 
 from io import StringIO
+from urllib.parse import urlparse
 
 # A base target class which assumes some tags will be ignored.
 # This will output HTML with certain tags removed if used by itself.
@@ -105,13 +107,22 @@ class PlaintextTarget(CleanupTarget):
 
 
 class StrandTarget(CleanupTarget):
-    def __init__(self):
+    def __init__(self, lang, align_href=False):
         super(StrandTarget, self).__init__()
         self.current_chunk = StringIO()
         # Tags which are not shown in the strand output. Taken from Herve's code.
         self.strand_ignore_tags = {'b', 'strong', 'i', 'em', 'font', 'span',
                                    'nobr', 'sup', 'sub', 'meta', 'link', 'acronym'}
+        if not align_href:
+            self.strand_ignore_tags.add('a')
+        self.lang = lang
+        self.align_href = align_href
         self.current_start_tag = None
+
+        langlet = {"ja": ("ja", "jp", "jpn", "japanese", "japan"),
+                   "en": ("en", "us", "eng", "english", "usa")}
+        self.re_lang = re.compile(r"\b({:s})\b".format("|".join(langlet[lang])))
+        self.re_slax = re.compile("(?<!:)/{2,}")
 
     def start_impl(self, tag, attrs):
         if len(self.ignore_stack) == 0:
@@ -125,10 +136,12 @@ class StrandTarget(CleanupTarget):
                 if tag != "a":
                     self.buffer.write("[START:{:s}]\n".format(tag))
                     self.current_start_tag = "[START:{:s}]".format(tag)
-                elif "href" in attrs and self.current_start_tag is not None:
+                elif self.align_href and "href" in attrs and self.current_start_tag is not None:
+                    href = self.norm_lang(attrs["href"])
                     val = self.buffer.getvalue()
                     pos = val.rfind(self.current_start_tag)
-                    data = val[pos: pos + len(self.current_start_tag) - 1] + " " + attrs["href"] + "]\n"
+                    data = val[pos: pos + len(self.current_start_tag) - 1] + \
+                        " " + href + "]\n"
                     self.buffer.seek(pos)
                     self.buffer.write(data)
 
@@ -159,6 +172,13 @@ class StrandTarget(CleanupTarget):
                 self.buffer.write("\n")
             self.current_chunk.close()
             self.current_chunk = StringIO()
+
+    def norm_lang(self, url):
+        domain = tldextract.extract(url).domain
+        path = urlparse(url).path
+        path = self.re_lang.sub("", path)
+        path = self.re_slax.sub("/", path)
+        return domain + ":" + path
 
 
 if __name__ == "__main__":
