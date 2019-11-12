@@ -23,14 +23,18 @@ $ make install
 $ cd test
 $ python gen_sample.py -l1 en -l2 ja -u1 http://ahatoro.com/en/aha-toro -u2 http://ahatoro.com/ja/aha-toro | gzip -c > ahatoro.gz
 $ strand-align -i ahatoro.gz -o test
+```
 
-# *.ann format (alignment metadata for each document pair)
-# <left url>\t<right url>\t<offset>\t<number of alignments>\t<difference percentage>\t<left sequence length>\t<right sequence length>
+*.ann format (alignment metadata for each document pair)  
+`<left url>\t<right url>\t<offset>\t<number of alignments>\t<difference percentage>\t<left sequence length>\t<right sequence length>`
+```
 $ cat test.ja-en.ann 
 http://ahatoro.com/ja/aha-toro	http://ahatoro.com/en/aha-toro	0	33	0.000000	207	207
+```
 
-# alignment format
-# <left sequence>\t<left text>\t<right sequence>\t<right text>\t<alignment cost>
+alignment format  
+`<left sequence>\t<left text>\t<right sequence>\t<right text>\t<alignment cost>`
+```
 $ cat test.ja-en
 3	Aha Toro | Aha Toro	3	Aha Toro | Aha Toro	0.000000
 8	Jump to Navigation	8	Jump to Navigation	0.000000
