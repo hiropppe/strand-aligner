@@ -85,6 +85,7 @@ def main(input_file, num_entries, out_prefix, sentence_aligner, input_base64, ou
     in_file = gzip.open(input_file, "r")
     linecount = 0
     for line in in_file:
+        print(linecount)
         line = line.decode("utf8")
         (key, webpages) = parse_entry(line, b64=input_base64)
         if len(key) == 0:
@@ -208,7 +209,7 @@ def strand_extract_and_clean(strand_aligner, sent_aligner, source, target, sourc
    #     len(target_tagchunks), len(source_tagchunks) * len(target_tagchunks)))
     grid_size = len(source_tagchunks) * len(target_tagchunks)
     if grid_size > 1000000000:
-        return ([], [])
+        return ([], [], [], 1.0, 0, 0)
     alignment, dp = strand_aligner.align(source_tagchunks, target_tagchunks)
     bi_out = []
     source_out = []
