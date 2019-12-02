@@ -111,11 +111,13 @@ def main(input_file, num_entries, out_prefix, sentence_aligner, input_base64, ou
                     pass
 
             # if language_pair[0] in data_by_language and language_pair[1] in data_by_language:
-            if "en" in data_by_language:
+            if "en" in data_by_language and "strand" in data_by_language["en"]:
                 target_lang = "en"
                 # Loop over pairs
                 for source_lang in data_by_language:
                     if source_lang == target_lang:
+                        continue
+                    if "strand" not in data_by_language[source_lang]:
                         continue
                     pair_code = "%s-%s" % (source_lang, target_lang)
                     # Check to see if we have initialized data for this pair
