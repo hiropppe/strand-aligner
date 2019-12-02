@@ -85,7 +85,6 @@ def main(input_file, num_entries, out_prefix, sentence_aligner, input_base64, ou
     in_file = gzip.open(input_file, "r")
     linecount = 0
     for line in in_file:
-        print(linecount)
         line = line.decode("utf8")
         (key, webpages) = parse_entry(line, b64=input_base64)
         if len(key) == 0:
