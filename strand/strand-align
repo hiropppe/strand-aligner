@@ -215,16 +215,32 @@ def strand_extract_and_clean(strand_aligner, sent_aligner, source, target, sourc
     bi_out = []
     source_out = []
     target_out = []
+    current_source_chunk = StringIO()
+    current_target_chunk = StringIO()
     for (si, s, ti, t, c) in alignment:
         if (s and s.tc_type == strand.TCType.CHUNK
                 and t and t.tc_type == strand.TCType.CHUNK):
+            current_source_chunk.write(s.chunk_data)
+            current_target_chunk.write(t.chunk_data)
+        elif (s and s.tc_type == strand.TCType.END and
+              t and t.tc_type == strand.TCType.END and
+              current_source_chunk.tell() > 0 and current_target_chunk.tell() > 0):
+
+            if s == t == "[END:a]":
+                continue
+
+            source_chunk_data = current_source_chunk.getvalue()
+            target_chunk_data = current_target_chunk.getvalue()
+            current_source_chunk = StringIO()
+            current_target_chunk = StringIO()
+
             if sent_aligner is None:
-                bi_out.append((si, s.chunk_data, ti, t.chunk_data, c))
-                source_out.append(s.chunk_data)
-                target_out.append(t.chunk_data)
+                bi_out.append((si, source_chunk_data, ti, target_chunk_data, c))
+                source_out.append(source_chunk_data)
+                target_out.append(target_chunk_data)
             else:
-                source_sents = source_seg.process(s.chunk_data)
-                target_sents = target_seg.process(t.chunk_data)
+                source_sents = source_seg.process(source_chunk_data)
+                target_sents = target_seg.process(target_chunk_data)
                 # print("GC alignment: %d x %d = %d" % (len(source_sents), len(
                 #     target_sents), len(source_sents) * len(target_sents)))
                 grid_size = len(source_sents) * len(target_sents)

@@ -20,7 +20,8 @@ class CleanupTarget(object):
         self.ignore_stack = []
         self.ignored_tags = {'script', 'style'}
         self.whitespace = re.compile("\s+", re.U)
-        self.word_break_tags = {'br', 'option', 'a'}
+#        self.word_break_tags = {'br', 'option', 'a'}
+        self.word_break_tags = {'br', 'option'}
         self.sent_break_tags = {'td', 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5',
                                 'h6', 'title', 'hr', 'pre', 'blockquote', 'ul', 'li'}
 
@@ -115,12 +116,14 @@ class StrandTarget(CleanupTarget):
                                    'nobr', 'sup', 'sub', 'meta', 'link', 'acronym'}
         if not align_href:
             self.strand_ignore_tags.add('a')
+
         self.lang = lang
         self.align_href = align_href
         self.current_start_tag = None
 
         langlet = {"ja": ("ja", "jp", "jpn", "japanese", "japan"),
                    "en": ("en", "us", "eng", "english", "usa")}
+
         self.re_lang = re.compile(r"\b({:s})\b".format("|".join(langlet[lang])))
         self.re_slax = re.compile("(?<!:)/{2,}")
 
@@ -133,17 +136,25 @@ class StrandTarget(CleanupTarget):
                     self.current_chunk.write(" ")
             else:
                 self.clear_current_chunk()
-                if tag != "a":
-                    self.buffer.write("[START:{:s}]\n".format(tag))
-                    self.current_start_tag = "[START:{:s}]".format(tag)
-                elif self.align_href and "href" in attrs and self.current_start_tag is not None:
+                if tag == "a" and self.align_href and "href" in attrs:
                     href = self.norm_lang(attrs["href"])
-                    val = self.buffer.getvalue()
-                    pos = val.rfind(self.current_start_tag)
-                    data = val[pos: pos + len(self.current_start_tag) - 1] + \
-                        " " + href + "]\n"
-                    self.buffer.seek(pos)
-                    self.buffer.write(data)
+                    self.buffer.write(f"[START:a {href}]\n")
+                    self.current_start_tag = "[START:a]"
+                else:
+                    self.buffer.write(f"[START:{tag}]\n")
+                    self.current_start_tag = f"[START:{tag}]"
+
+#                if tag != "a":
+#                    self.buffer.write("[START:{:s}]\n".format(tag))
+#                    self.current_start_tag = "[START:{:s}]".format(tag)
+#                elif self.align_href and "href" in attrs and self.current_start_tag is not None:
+#                    href = self.norm_lang(attrs["href"])
+#                    val = self.buffer.getvalue()
+#                    pos = val.rfind(self.current_start_tag)
+#                    data = val[pos: pos + len(self.current_start_tag) - 1] + \
+#                        " " + href + "]\n"
+#                    self.buffer.seek(pos)
+#                    self.buffer.write(data)
 
     def end_impl(self, tag):
         if len(self.ignore_stack) == 0:
@@ -151,9 +162,11 @@ class StrandTarget(CleanupTarget):
                 if tag in self.word_break_tags:
                     self.current_chunk.write(" ")
             else:
-                if tag != "a":
-                    self.clear_current_chunk()
-                    self.buffer.write("[END:%s]\n" % tag)
+                self.clear_current_chunk()
+                self.buffer.write("[END:%s]\n" % tag)
+                #if tag != "a":
+                #    self.clear_current_chunk()
+                #    self.buffer.write("[END:%s]\n" % tag)
                 self.current_start_tag = None
 
     def data_impl(self, data):
@@ -206,8 +219,12 @@ if __name__ == "__main__":
                 result = etree.parse(StringIO(str(soup)), parser)
         return result
 
-    html = open(sys.argv[1]).read()
-    parser = etree.HTMLParser(encoding="utf-8", target=StrandTarget())
+    if len(sys.argv) > 3:
+        encoding = sys.argv[3]
+    else:
+        encoding = "utf8"
+    html = open(sys.argv[1], encoding=encoding).read()
+    parser = etree.HTMLParser(encoding=encoding, target=StrandTarget(sys.argv[2], True))
 
     tagchunks = apply_parser(html, parser)
     print(tagchunks)
