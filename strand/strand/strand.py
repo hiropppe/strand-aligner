@@ -138,7 +138,7 @@ class StrandAligner:
     def create_tag_chunk_stream(self, lines):
         tag_chunks = []
         for line in lines:
-            line = line.strip()
+            #line = line.strip()
             if len(line) == 0:
                 continue
             m = self.tag_matcher.match(line)

@@ -222,11 +222,11 @@ def strand_extract_and_clean(strand_aligner, sent_aligner, source, target, sourc
                 and t and t.tc_type == strand.TCType.CHUNK):
             current_source_chunk.write(s.chunk_data)
             current_target_chunk.write(t.chunk_data)
-        elif (s and s.tc_type == strand.TCType.END and
-              t and t.tc_type == strand.TCType.END and
+        elif (s and s.tc_type != strand.TCType.CHUNK and
+              t and t.tc_type != strand.TCType.CHUNK and
               current_source_chunk.tell() > 0 and current_target_chunk.tell() > 0):
 
-            if s == t == "[END:a]":
+            if s.tag == t.tag == "a" and s.tc_type == t.tc_type != strand.TCType.CHUNK:
                 continue
 
             source_chunk_data = current_source_chunk.getvalue()

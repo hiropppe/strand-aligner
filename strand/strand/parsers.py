@@ -19,7 +19,7 @@ class CleanupTarget(object):
         self.buffer = StringIO()
         self.ignore_stack = []
         self.ignored_tags = {'script', 'style'}
-        self.whitespace = re.compile("\s+", re.U)
+        self.whitespace = re.compile("[\s\u3000]+", re.U)
 #        self.word_break_tags = {'br', 'option', 'a'}
         self.word_break_tags = {'br', 'option'}
         self.sent_break_tags = {'td', 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5',
@@ -107,6 +107,18 @@ class PlaintextTarget(CleanupTarget):
         return self.trimtext(self.buffer.getvalue())
 
 
+def more_codes(lang):
+    if lang == "ja":
+        return ("ja", "jp", "jpn", "japanese", "japan", "j", "lang=ja")
+    if lang == "en":
+        return ("en", "us", "eng", "english", "usa", "e", "lang=en")
+    return (lang,)
+
+
+re_sla2 = re.compile("/{2,}")
+re_del = re.compile("[-_~?]")
+
+
 class StrandTarget(CleanupTarget):
     def __init__(self, lang, align_href=False):
         super(StrandTarget, self).__init__()
@@ -121,11 +133,13 @@ class StrandTarget(CleanupTarget):
         self.align_href = align_href
         self.current_start_tag = None
 
-        langlet = {"ja": ("ja", "jp", "jpn", "japanese", "japan"),
-                   "en": ("en", "us", "eng", "english", "usa")}
+#        langlet = {"ja": ("ja", "jp", "jpn", "japanese", "japan"),
+#                   "en": ("en", "us", "eng", "english", "usa")}
 
-        self.re_lang = re.compile(r"\b({:s})\b".format("|".join(langlet[lang])))
-        self.re_slax = re.compile("(?<!:)/{2,}")
+#        self.re_lang = re.compile(r"\b({:s})\b".format("|".join(langlet[lang])))
+#        self.re_slax = re.compile("(?<!:)/{2,}")
+
+        self.re_lang = re.compile(r"(?<=[^a-z])({:s})(?=[^a-z])".format("|".join(more_codes(lang))), flags=re.IGNORECASE)
 
     def start_impl(self, tag, attrs):
         if len(self.ignore_stack) == 0:
@@ -179,7 +193,8 @@ class StrandTarget(CleanupTarget):
     # Write the current chunk to the output buffer if it's not empty
     def clear_current_chunk(self):
         if len(self.current_chunk.getvalue().strip()) > 0:
-            chunk_str = self.format_whitespace(self.current_chunk.getvalue().strip())
+            # chunk_str = self.format_whitespace(self.current_chunk.getvalue().strip())
+            chunk_str = self.format_whitespace(self.current_chunk.getvalue())
             if len(chunk_str) > 0:
                 self.buffer.write(chunk_str)
                 self.buffer.write("\n")
@@ -188,10 +203,12 @@ class StrandTarget(CleanupTarget):
 
     def norm_lang(self, url):
         domain = tldextract.extract(url).domain
-        path = urlparse(url).path
-        path = self.re_lang.sub("", path)
-        path = self.re_slax.sub("/", path)
-        return domain + ":" + path
+        parsed = urlparse(url)
+        path_query = parsed.path + parsed.query + "#"
+        path_query = re_del.sub("", re_sla2.sub("/", self.re_lang.sub("", path_query)))
+        #path = self.re_lang.sub("", path)
+        #path = self.re_slax.sub("/", path)
+        return domain + ":" + path_query
 
 
 if __name__ == "__main__":
