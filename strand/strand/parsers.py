@@ -4,10 +4,12 @@
 # PlaintextTarget: Produces plain text only
 # StrandTarget: Produces data to be aligned with STRAND
 
+import bs4
 import re
 import tldextract
 
 from io import StringIO
+from lxml import etree
 from urllib.parse import urlparse
 
 # A base target class which assumes some tags will be ignored.
@@ -211,37 +213,44 @@ class StrandTarget(CleanupTarget):
         return domain + ":" + path_query
 
 
-if __name__ == "__main__":
-    import bs4
-    import sys
-    from lxml import etree
+def decode_html(html_string):
+    converted = bs4.UnicodeDammit(html_string, isHTML=True)
+    if not converted.unicode_markup:
+        raise UnicodeDecodeError(
+            "Failed to detect encoding, tried [%s]",
+            ', '.join(converted.tried_encodings))
+    return converted.unicode_markup
 
-    def decode_html(html_string):
-        converted = bs4.UnicodeDammit(html_string, isHTML=True)
-        if not converted.unicode_markup:
-            raise UnicodeDecodeError(
-                "Failed to detect encoding, tried [%s]",
-                ', '.join(converted.tried_encodings))
-        return converted.unicode_markup
 
-    def apply_parser(html, parser):
-        result = ""
+def apply_parser(html, parser):
+    result = ""
+    try:
+        result = etree.parse(StringIO(html), parser)
+    except:  # TODO: find the specific error # noqa
         try:
-            result = etree.parse(StringIO(html), parser)
-        except:  # TODO: find the specific error
-            try:
-                result = etree.parse(StringIO(decode_html(html)), parser)
-            except:
-                soup = bs4.BeautifulSoup(html, "lxml")
-                result = etree.parse(StringIO(str(soup)), parser)
-        return result
+            result = etree.parse(StringIO(decode_html(html)), parser)
+        except: # noqa
+            soup = bs4.BeautifulSoup(html, "lxml")
+            result = etree.parse(StringIO(str(soup)), parser)
+    return result
+
+
+def parse(html, lang, encoding="utf8"):
+    parser = etree.HTMLParser(encoding=encoding, target=StrandTarget(lang, True))
+    tagchunks = apply_parser(html, parser)
+    return tagchunks
+
+
+if __name__ == "__main__":
+    import sys
 
     if len(sys.argv) > 3:
         encoding = sys.argv[3]
     else:
         encoding = "utf8"
-    html = open(sys.argv[1], encoding=encoding).read()
-    parser = etree.HTMLParser(encoding=encoding, target=StrandTarget(sys.argv[2], True))
 
-    tagchunks = apply_parser(html, parser)
+    lang = sys.argv[2]
+
+    html = open(sys.argv[1], encoding=encoding).read()
+    tagchunks = parse(html, lang, encoding)
     print(tagchunks)
